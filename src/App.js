@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './App.css';
+import './App.scss';
 import Search from "./components/Search";
 import Table from "./components/Table";
 
@@ -43,7 +43,8 @@ class App extends Component {
         this.state = {
             // list: list | Когда имя свойства в объекте совпадает с именем переменной, вы можете использовать следующее: list
             list,
-            searchTerm: ''
+            searchTerm: '',
+            title: 'The road to learn react'
         }
     }
 
@@ -63,15 +64,18 @@ class App extends Component {
     }
 
     render() {
-        const {list, searchTerm} = this.state
+        const {list, searchTerm, title} = this.state
 
         return (
             <div className='App'>
-                <p>Title filter</p>
+                <h2>{title}</h2>
                 <Search
                     value={searchTerm}
                     onChange={this.onSearchChange}
-                />
+                >
+                    Search
+                </Search>
+
                 <Table
                     list={list}
                     pattern={isSearched(searchTerm)}

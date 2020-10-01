@@ -21,12 +21,28 @@ const list = [
         objectID: 1,
     },
     {
-        title: 'Redax',
+        title: 'Vue',
         url: 'https://redux.js.org/',
-        author: 'Dan Abramov, Andrew Clark',
-        num_comments: 2,
-        points: 5,
+        author: 'Andrew Tomas',
+        num_comments: 12,
+        points: 1,
         objectID: 2,
+    },
+    {
+        title: 'Angular',
+        url: 'https://redux.js.org/',
+        author: 'Frank Novik',
+        num_comments: 2,
+        points: 4,
+        objectID: 3,
+    },
+    {
+        title: 'Jquery',
+        url: 'https://redux.js.org/',
+        author: 'Andrew Clark',
+        num_comments: 2,
+        points: 15,
+        objectID: 4,
     }
 ];
 
@@ -68,7 +84,7 @@ class App extends Component {
 
         return (
             <div className='App'>
-                <h2>{title}</h2>
+                <h2 className="App__title">{title}</h2>
                 <Search
                     value={searchTerm}
                     onChange={this.onSearchChange}

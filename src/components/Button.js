@@ -2,14 +2,15 @@ import React from "react";
 import '../App.scss';
 
 const Button = (props) => {
+    const {onDismiss, className, children} = props
     return (
-        <div>
+        <div className="App__btn-block">
             <button
-                onClick={props.onDismiss}
-                className={props.className}
+                onClick={onDismiss}
+                className={className}
                 type="button"
             >
-                {props.children}
+                {children}
             </button>
         </div>
     )

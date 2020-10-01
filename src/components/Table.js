@@ -1,32 +1,35 @@
-import React, {Component} from "react";
+import React from "react";
 import '../App.scss';
 import Button from "./Button";
 
-class Table extends Component {
-    render() {
-        const {list, pattern, onDismiss} = this.props;
-        return (
-            <div>
-                {list.filter(pattern).map(item =>
-                    <div key={item.objectID}>
-                        <span>
+const Table = ({list, pattern, onDismiss}) => {
+    return (
+        <div className="App__items">
+            {list.filter(pattern).map(item =>
+                <div className="App__item"
+                     key={item.objectID}>
+                    <div className="item__header">
+                        <h3>
                             <a href={item.url}>{item.title}</a>
-                        </span>
+                        </h3>
                         <span>{item.author}</span>
-                        <span>{item.num_comments}</span>
-                        <span>{item.points}</span>
-                        <span>
+                    </div>
+                    <div className="item__body">
+                        <span>comments: {item.num_comments}</span>
+                        <span>points: {item.points}</span>
+                    </div>
+                    <span>
                             <Button
                                 onDismiss={() => onDismiss(item.objectID)}
+                                className="App__btn"
                             >
                                 Dismiss
                             </Button>
                         </span>
-                    </div>
-                )}
-            </div>
-        );
-    }
+                </div>
+            )}
+        </div>
+    )
 }
 
 export default Table

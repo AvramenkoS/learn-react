@@ -3,9 +3,87 @@
   padding: 0;
 }
 
+body {
+  font-family: sans-serif;
+  background: #000;
+}
+
 .App {
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
   text-align: center;
+
+  &__title {
+    text-transform: uppercase;
+  }
+
+  &__form {
+    color: #fff;
+    text-transform: uppercase;
+
+    input {
+      margin: 0 auto 0 10px;
+      padding: 5px 10px;
+      background: #000;
+      border: 1px solid #fff;
+      border-radius: 3px;
+      color: #fff;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__items {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  &__btn {
+    width: 100%;
+    text-transform: uppercase;
+    padding: 5px 0;
+    cursor: pointer;
+    letter-spacing: .5px;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    margin: 10px auto 0;
+    transition: all .3s linear;
+    &:hover {
+      background: #000;
+      color: #fff;
+    }
+  }
+
+  &__title,
+  &__item {
+    margin: 10px auto 20px;
+    color: #fff;
+
+    h3 {
+      a {
+        text-decoration: none;
+        color: #fff;
+      }
+    }
+
+    .item {
+      &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        span {
+          text-align: end;
+        }
+      }
+
+      &__body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
+  }
 }

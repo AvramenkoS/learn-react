@@ -37,7 +37,7 @@ body {
   }
 
   &__items {
-    max-width: 250px;
+    max-width: 350px;
     margin: 0 auto;
   }
   &__btn {
@@ -72,8 +72,11 @@ body {
     .item {
       &__header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
+        h3 {
+          text-align: left;
+        }
         span {
           text-align: end;
         }

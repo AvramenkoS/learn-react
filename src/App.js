@@ -46,6 +46,11 @@ const list = [
     }
 ];
 
+const DEFAULT_QUERY = 'redux';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+
 const isSearched = (searchTerm) => {
     return item => {
         return item.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -59,17 +64,32 @@ class App extends Component {
         this.state = {
             // list: list | Когда имя свойства в объекте совпадает с именем переменной, вы можете использовать следующее: list
             list,
-            searchTerm: '',
+            result: null,
+            searchTerm: DEFAULT_QUERY,
             title: 'The road to learn react'
         }
     }
 
+    setSearchTopStories = (result) => {
+        this.setState({
+            result: result
+        })
+    }
+
+    componentDidMount() {
+        const {searchTerm} = this.state;
+
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+            .then(response => response.json())
+            .then(result => this.setSearchTopStories(result))
+            .catch(error => error);
+    }
 
     onDismiss = (id) => {
-        const list = this.state.list;
-        const updatedList = list.filter(item => item.objectID !== id)
+        const result = this.state.result;
+        const updatedList = result.hits.filter(item => item.objectID !== id)
         this.setState({
-            list: updatedList
+            result: updatedList
         })
     }
 
@@ -80,7 +100,9 @@ class App extends Component {
     }
 
     render() {
-        const {list, searchTerm, title} = this.state
+        const {searchTerm, title, result} = this.state
+
+        if (!result) return null
 
         return (
             <div className='App'>
@@ -93,7 +115,7 @@ class App extends Component {
                 </Search>
 
                 <Table
-                    list={list}
+                    list={result.hits}
                     pattern={isSearched(searchTerm)}
                     onDismiss={this.onDismiss}
                 />

@@ -2,10 +2,10 @@ import React from "react";
 import '../App.scss';
 import Button from "./Button";
 
-const Table = ({list, pattern, onDismiss}) => {
+const Table = ({hits, onDismiss}) => {
     return (
         <div className="App__items">
-            {list.filter(pattern).map(item =>
+            {hits.map(item =>
                 <div className="App__item"
                      key={item.objectID}>
                     <div className="item__header">

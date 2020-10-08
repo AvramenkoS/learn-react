@@ -3,94 +3,56 @@ import './App.scss';
 import Search from "./components/Search";
 import Table from "./components/Table";
 
-const list = [
-    {
-        title: 'React',
-        url: 'https://reactjs.org/',
-        author: 'Jordan Walke',
-        num_comments: 3,
-        points: 4,
-        objectID: 0,
-    },
-    {
-        title: 'Redux',
-        url: 'https://redux.js.org/',
-        author: 'Dan Abramov, Andrew Clark',
-        num_comments: 2,
-        points: 5,
-        objectID: 1,
-    },
-    {
-        title: 'Vue',
-        url: 'https://redux.js.org/',
-        author: 'Andrew Tomas',
-        num_comments: 12,
-        points: 1,
-        objectID: 2,
-    },
-    {
-        title: 'Angular',
-        url: 'https://redux.js.org/',
-        author: 'Frank Novik',
-        num_comments: 2,
-        points: 4,
-        objectID: 3,
-    },
-    {
-        title: 'Jquery',
-        url: 'https://redux.js.org/',
-        author: 'Andrew Clark',
-        num_comments: 2,
-        points: 15,
-        objectID: 4,
-    }
-];
-
 const DEFAULT_QUERY = 'redux';
+const DEFAULT_HPP = '2';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
-
-const isSearched = (searchTerm) => {
-    return item => {
-        return item.title.toLowerCase().includes(searchTerm.toLowerCase())
-    }
-}
+const PARAM_PAGE = 'page=';
+const PARAM_HPP = 'hitsPerPage=';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            // list: list | Когда имя свойства в объекте совпадает с именем переменной, вы можете использовать следующее: list
-            list,
             result: null,
             searchTerm: DEFAULT_QUERY,
             title: 'The road to learn react'
         }
     }
 
-    setSearchTopStories = (result) => {
-        this.setState({
-            result: result
-        })
-    }
-
-    componentDidMount() {
-        const {searchTerm} = this.state;
-
-        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+    fetchSearchTopStories = (searchTerm, page = 0) => {
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
             .then(response => response.json())
             .then(result => this.setSearchTopStories(result))
             .catch(error => error);
     }
 
-    onDismiss = (id) => {
-        const result = this.state.result;
-        const updatedList = result.hits.filter(item => item.objectID !== id)
+    componentDidMount() {
+        const {searchTerm} = this.state;
+        this.fetchSearchTopStories(searchTerm);
+    }
+
+    onSearchSubmit = (event) => {
+        const {searchTerm} = this.state;
+        this.fetchSearchTopStories(searchTerm);
+        event.preventDefault()
+    }
+
+    setSearchTopStories = (result) => {
+        const {hits, page} = result
+        const oldHits = page !== 0
+            ? this.state.result.hits
+            : [];
+        const updatedHits = [
+            ...oldHits,
+            ...hits
+        ];
         this.setState({
-            result: updatedList
-        })
+            result: {hits: updatedHits, page}
+        });
+
     }
 
     onSearchChange = (event) => {
@@ -99,10 +61,18 @@ class App extends Component {
         })
     }
 
-    render() {
-        const {searchTerm, title, result} = this.state
+    onDismiss = (id) => {
+        const {result} = this.state;
+        const isNotId = item => item.objectID !== id;
+        const updatedHits = result.hits.filter(isNotId);
+        this.setState({
+            result: {...result, hits: updatedHits}
+        })
+    }
 
-        if (!result) return null
+    render() {
+        const {searchTerm, title, result} = this.state;
+        const page = (result && result.page) || 0;
 
         return (
             <div className='App'>
@@ -110,15 +80,27 @@ class App extends Component {
                 <Search
                     value={searchTerm}
                     onChange={this.onSearchChange}
+                    onSubmit={this.onSearchSubmit}
                 >
                     Search
                 </Search>
 
-                <Table
-                    list={result.hits}
-                    pattern={isSearched(searchTerm)}
-                    onDismiss={this.onDismiss}
-                />
+                {result
+                    ? <Table
+                        hits={result.hits}
+                        onDismiss={this.onDismiss}
+                    />
+                    : null
+                }
+
+                <div className="App__interactions">
+                    <button
+                        className="App__btn App__btn-more"
+                        onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}
+                    >
+                        More stories
+                    </button>
+                </div>
             </div>
         )
     }
